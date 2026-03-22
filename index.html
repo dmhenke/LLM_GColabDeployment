@@ -527,32 +527,40 @@
     <h3>// Tier Classification</h3>
 
     <div class="card" style="border-left-color: var(--red);">
-      <h4>S-Tier — Frontier Class (Not Colab-Feasible)</h4>
-      <p>Kimi K2.5 is a mixture-of-experts model with 1 trillion total parameters (32B active per token), achieving a GPQA Diamond score of <strong>87.6%</strong>, MATH-500 at <strong>98.0%</strong>, and a 262K context window. Full-scale deployment requires infrastructure far beyond Colab's capacity.</p>
+      <h4>Beyond Colab-Feasible — Frontier Scale</h4>
+      <p>Kimi K2.5 (1T total / 32B active parameters) achieves GPQA Diamond <strong>87.6%</strong> and MATH-500 <strong>98.0%</strong> with a 262K context window. Full deployment requires infrastructure far beyond Colab. Similarly, Qwen3-235B-A22B and DeepSeek V3.2 (685B) top self-hosted leaderboards but demand multi-GPU workstations.</p>
     </div>
 
     <div class="card green">
-      <h4>A-Tier — Best Colab-Feasible Option</h4>
-      <p>For scientific research in 2026, the top deployable recommendations are <strong>DeepSeek-R1 distilled variants</strong>, <strong>Qwen3 series</strong>, and THUDM/GLM-4.1V-9B-Thinking — selected for their exceptional capabilities in scientific reasoning, mathematical computation, and research applications.</p>
+      <h4>Colab-Feasible — Best Scientific Performance</h4>
+      <p>Within Colab's VRAM envelope, the <strong>Qwen3 series</strong> and <strong>DeepSeek-R1 distilled variants</strong> dominate scientific benchmarks. Qwen3-14B posts the highest instruction-following scores (MMLU-Pro 0.774) of any 16 GB-class model and runs entirely in the L4's VRAM. DeepSeek-R1-Distill-Qwen-14B leads competition mathematics at <strong>94.9% Math-500</strong> and <strong>66.7% AIME</strong> for the same hardware budget. On the free T4, Qwen3-8B and DeepSeek-R1:8b are both thinking-enabled by default in Ollama and represent the top two options for their class.</p>
     </div>
 
     <h3>// Final Recommendation by Tier</h3>
 
     <div class="tier-grid">
       <div class="tier-card free">
-        <div class="tier-label">Free Tier · T4 GPU</div>
-        <h3>Qwen3-8B</h3>
-        <p style="font-size:13px;">Q4_K_M quantized (~5 GB VRAM). Best scientific accuracy within the 15 GB T4 VRAM budget. Strong thinking-mode performance for an 8B model. Scores approximately <strong>73%</strong> on GPQA Diamond.</p>
+        <div class="tier-label">Free Tier · T4 GPU · 15 GB VRAM</div>
+        <h3>Qwen3:8b (Primary)</h3>
+        <p style="font-size:13px; margin-bottom:10px;">Q4_K_M · ~5–6 GB VRAM · ~28 t/s on T4. Best overall scientific accuracy and instruction-following at the 8B class. Thinking mode enabled by default in Ollama. MMLU-Pro competitive and strong general scientific reasoning.</p>
+        <div style="border-top: 1px solid var(--border); padding-top:10px; margin-top:4px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--muted);">SCIENTIFIC MATH ALTERNATIVE</span>
+          <p style="font-size:12px; margin-top:6px; margin-bottom:0;"><strong style="color:var(--cyan);">deepseek-r1:8b</strong> — Same VRAM footprint, stronger on competition-style math and multi-step chain-of-thought. Use this if your workflow is primarily quantitative science (physics, chemistry calculations). Thinking by default in Ollama.</p>
+        </div>
       </div>
       <div class="tier-card paid">
-        <div class="tier-label">Paid Tier · A100 / G4</div>
-        <h3>DeepSeek-R1-Distill-32B</h3>
-        <p style="font-size:13px;">Q4_K_M quantized (~20 GB VRAM). Minimum viable model for production OpenClaw agentic chains. Scores approximately <strong>83%</strong> on GPQA Diamond. Supports 65K context.</p>
+        <div class="tier-label">Pro Tier · L4 GPU · 22.5 GB VRAM</div>
+        <h3>Qwen3:14b (Primary)</h3>
+        <p style="font-size:13px; margin-bottom:10px;">Q4_K_M · ~12 GB VRAM · 61.85 t/s — 100% GPU-resident. Best instruction-following and scientific reasoning of any model fitting the L4 VRAM budget. MMLU-Pro 0.774, strong GPQA. Ample headroom for 19K+ context.</p>
+        <div style="border-top: 1px solid var(--border); padding-top:10px; margin-top:4px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--muted);">SCIENTIFIC MATH ALTERNATIVE</span>
+          <p style="font-size:12px; margin-top:6px; margin-bottom:0;"><strong style="color:var(--amber);">deepseek-r1:14b</strong> — 94.9% Math-500, 66.7% AIME. Use this if your primary workload is quantitative science, physics derivations, or mathematical proofs. Slightly lower instruction-following (IFBench 0.221) — pair with careful system prompting.</p>
+        </div>
       </div>
     </div>
 
     <div class="callout info">
-      The free tier is suitable for scientific query answering and prototyping but will encounter reliability problems with complex OpenClaw agentic chains due to inherent limitations of 7–8B parameter models on tool calling.
+      <strong>Why Qwen3:14b over DeepSeek-R1:14b as default on Pro?</strong> Real-hardware benchmarks on 16 GB VRAM confirm Qwen3-14B delivers 61.85 t/s at a 12 GB footprint with the best instruction-following in its class — critical for reliable OpenClaw tool-calling chains. DeepSeek-R1-Distill-14B is the superior choice when mathematical correctness trumps interaction reliability, at the cost of lower IFBench scores and slower generation.
     </div>
   </div>
 </section>
@@ -572,7 +580,8 @@
             <th>VRAM</th>
             <th>Compute Units/hr</th>
             <th>Cost</th>
-            <th>Max Feasible Model</th>
+            <th>Optimal Model</th>
+            <th>Alt (Math Focus)</th>
           </tr>
         </thead>
         <tbody>
@@ -582,15 +591,17 @@
             <td>15 GB</td>
             <td>1.76 CU/hr</td>
             <td>$0/mo</td>
-            <td>8B–14B parameters</td>
+            <td>qwen3:8b</td>
+            <td>deepseek-r1:8b</td>
           </tr>
           <tr>
             <td>Pro</td>
-            <td>T4 / V100</td>
-            <td>15–16 GB</td>
-            <td>~3–7 CU/hr</td>
+            <td>NVIDIA L4</td>
+            <td>22.5 GB</td>
+            <td>~4.82 CU/hr</td>
             <td>$9.99/mo</td>
-            <td>13B–20B parameters</td>
+            <td>qwen3:14b</td>
+            <td>deepseek-r1:14b</td>
           </tr>
           <tr>
             <td>Pro+</td>
@@ -598,7 +609,8 @@
             <td>40–80 GB</td>
             <td>~15 CU/hr</td>
             <td>$49.99/mo</td>
-            <td>32B–70B parameters</td>
+            <td>qwen3:32b</td>
+            <td>deepseek-r1:32b</td>
           </tr>
           <tr>
             <td>Pro+</td>
@@ -606,13 +618,14 @@
             <td>~96 GB</td>
             <td>Highest</td>
             <td>$49.99/mo</td>
-            <td>70B+ parameters</td>
+            <td>qwen3:72b</td>
+            <td>deepseek-r1:70b</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p>The A100 is available in both 40 GB and 80 GB variants, selected via the "High RAM" slider. The G4 (NVIDIA RTX PRO 6000, Blackwell architecture) provides approximately 96 GB of VRAM and is currently the most capable option on the platform. Sessions on the free tier are preemptible with a ~12 hour runtime limit.</p>
+    <p>The <strong>Pro tier ($9.99/mo)</strong> now provides the NVIDIA L4 GPU — a direct successor to the T4 offering 22.5 GB of VRAM, native FP8 support, and nearly 2× the inference throughput of a T4 at essentially the same power envelope. The V100 has been retired from Colab. The L4's 22.5 GB VRAM comfortably accommodates 14B models at Q4_K_M with full GPU residency and headroom for context windows up to ~19K tokens. Sessions on the free tier are preemptible with a ~12 hour runtime limit; Pro sessions benefit from priority access and longer runtimes.</p>
   </div>
 </section>
 
@@ -621,95 +634,109 @@
   <div class="container">
     <div class="section-label">§ 04</div>
     <h2>Free Tier Deployment</h2>
-    <p>T4 GPU · 15 GB VRAM · Qwen3-8B (Q4_K_M) · ~5 GB VRAM usage</p>
+    <p>T4 GPU · 15 GB VRAM · <strong>Qwen3:8b</strong> (primary) or <strong>deepseek-r1:8b</strong> (math focus) · ~5–6 GB VRAM · ~28 t/s</p>
 
-    <p>The established pattern uses <strong>Ollama</strong> as the inference backend and <strong>ngrok</strong> to create a public HTTPS tunnel. By running Ollama on Colab's GPU and exposing it via ngrok, you obtain a fully private, locally-served LLM accessible from any browser, without data sent to external APIs.</p>
+    <p>The established pattern uses <strong>Ollama</strong> as the inference backend and <strong>ngrok</strong> to create a public HTTPS tunnel. By running Ollama on Colab's GPU and exposing it via ngrok, you obtain a fully private, locally-served LLM accessible from any browser, without data sent to external APIs. Both recommended models have <strong>thinking mode enabled by default</strong> in Ollama, providing chain-of-thought reasoning without any additional configuration.</p>
 
-    <h3>// Cell 1 — Install Dependencies & Launch Ollama</h3>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <span class="code-lang">Python · Google Colab</span>
-        <button class="code-copy" onclick="copyCode(this)">COPY</button>
-      </div>
-      <div class="code-body"><pre><span class="kw">import</span> subprocess, os, time, requests
-
-<span class="cm"># Install system dependencies and Ollama</span>
-os.<span class="fn">system</span>(<span class="st">"sudo apt-get install -y pciutils"</span>)
-os.<span class="fn">system</span>(<span class="st">"curl -fsSL https://ollama.ai/install.sh | sh"</span>)
-
-<span class="cm"># Set environment variables for performance</span>
-os.environ[<span class="st">"OLLAMA_KEEP_ALIVE"</span>]    = <span class="st">"24h"</span>
-os.environ[<span class="st">"OLLAMA_NUM_PARALLEL"</span>]  = <span class="st">"1"</span>
-
-<span class="cm"># Launch Ollama server in background</span>
-subprocess.<span class="fn">Popen</span>(
-    [<span class="st">"ollama"</span>, <span class="st">"serve"</span>],
-    stdout=<span class="fn">open</span>(<span class="st">"ollama.log"</span>, <span class="st">"w"</span>),
-    stderr=<span class="fn">open</span>(<span class="st">"ollama_err.log"</span>, <span class="st">"w"</span>),
-    preexec_fn=os.setsid
-)
-
-<span class="cm"># Poll until server is ready</span>
-<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">30</span>):
-    <span class="kw">try</span>:
-        <span class="kw">if</span> requests.<span class="fn">get</span>(<span class="st">"http://localhost:11434/api/tags"</span>, timeout=<span class="num">2</span>).status_code == <span class="num">200</span>:
-            <span class="fn">print</span>(<span class="st">"Ollama server is running."</span>)
-            <span class="kw">break</span>
-    <span class="kw">except</span>:
-        <span class="kw">pass</span>
-    time.<span class="fn">sleep</span>(<span class="num">1</span>)</pre></div>
+    <div class="callout info" style="margin-bottom:16px; font-size:13px;">
+      <strong>Collama template pattern:</strong> Use Jupyter shell magic (<code>!</code> prefix) for install and model pulls so that Colab's live shell environment picks up the new binary on PATH. Start the server via <code>threading.Thread</code> with <code>OLLAMA_HOST</code> and <code>OLLAMA_ORIGINS</code> set — this is the exact approach used by the <a href="https://colab.research.google.com/github/5aharsh/collama/blob/main/Ollama_Setup.ipynb" target="_blank">collama reference notebook</a>.
     </div>
 
-    <h3>// Cell 2 — Pull Recommended Model</h3>
+    <h3>// Cell 1 — Install Ollama</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <span class="code-lang">Python · Google Colab</span>
+        <span class="code-lang">Shell Magic · Google Colab</span>
         <button class="code-copy" onclick="copyCode(this)">COPY</button>
       </div>
-      <div class="code-body"><pre><span class="cm"># Qwen3-8B with thinking mode: best scientific accuracy within T4 VRAM budget</span>
-os.<span class="fn">system</span>(<span class="st">"ollama pull qwen3:8b"</span>)
-<span class="fn">print</span>(<span class="st">"Model ready."</span>)</pre></div>
+      <div class="code-body"><pre><span class="cm"># Run as a shell cell (! prefix) so the binary lands on the live Colab PATH</span>
+!curl -fsSL https://ollama.ai/install.sh | sh</pre></div>
     </div>
 
-    <h3>// Cell 3 — Expose Endpoint via ngrok</h3>
-    <div class="callout info" style="font-size:12px; margin-bottom: 8px;">Requires a free ngrok account. Register at <a href="https://ngrok.com" target="_blank">ngrok.com</a> and copy your authtoken from the dashboard.</div>
+    <h3>// Cell 2 — Start Ollama Server</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
         <span class="code-lang">Python · Google Colab</span>
         <button class="code-copy" onclick="copyCode(this)">COPY</button>
       </div>
-      <div class="code-body"><pre><span class="cm"># !pip install pyngrok  ← run this first in a separate cell</span>
+      <div class="code-body"><pre><span class="kw">import</span> os, threading, subprocess, time, requests
+
+<span class="kw">def</span> <span class="fn">start_ollama</span>():
+    os.environ[<span class="st">"OLLAMA_HOST"</span>]        = <span class="st">"0.0.0.0:11434"</span>
+    os.environ[<span class="st">"OLLAMA_ORIGINS"</span>]     = <span class="st">"*"</span>
+    os.environ[<span class="st">"OLLAMA_KEEP_ALIVE"</span>]  = <span class="st">"24h"</span>
+    os.environ[<span class="st">"OLLAMA_NUM_PARALLEL"</span>]= <span class="st">"1"</span>
+    subprocess.<span class="fn">Popen</span>([<span class="st">"ollama"</span>, <span class="st">"serve"</span>])  <span class="cm"># binary on PATH after Cell 1 shell magic</span>
+
+thread = threading.<span class="fn">Thread</span>(target=start_ollama)
+thread.<span class="fn">start</span>()
+time.<span class="fn">sleep</span>(<span class="num">5</span>)  <span class="cm"># allow server to initialise before polling</span>
+
+<span class="kw">try</span>:
+    r = requests.<span class="fn">get</span>(<span class="st">"http://localhost:11434/api/tags"</span>, timeout=<span class="num">5</span>)
+    <span class="fn">print</span>(<span class="st">"✓ Ollama is running."</span> <span class="kw">if</span> r.status_code == <span class="num">200</span> <span class="kw">else</span> <span class="st">f"✗ Unexpected status: {r.status_code}"</span>)
+<span class="kw">except</span> requests.exceptions.<span class="fn">ConnectionError</span>:
+    <span class="fn">print</span>(<span class="st">"✗ Server not responding — re-run Cell 1 and try again."</span>)</pre></div>
+    </div>
+
+    <h3>// Cell 3 — Pull Model (choose one)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">Shell Magic · Google Colab</span>
+        <button class="code-copy" onclick="copyCode(this)">COPY</button>
+      </div>
+      <div class="code-body"><pre><span class="cm"># OPTION A — General scientific reasoning + instruction-following (recommended default)</span>
+<span class="cm"># Qwen3-8B: ~5-6 GB VRAM, ~28 t/s on T4, thinking mode ON by default in Ollama</span>
+!ollama pull qwen3:8b
+
+<span class="cm"># OPTION B — Math-heavy science (physics, chemistry, proofs)</span>
+<span class="cm"># DeepSeek-R1:8b: same VRAM footprint, strong chain-of-thought math, thinking ON by default</span>
+<span class="cm"># !ollama pull deepseek-r1:8b</span></pre></div>
+    </div>
+
+    <h3>// Cell 4 — Expose via ngrok &amp; Configure OpenClaw</h3>
+    <div class="callout info" style="font-size:12px; margin-bottom: 8px;">Requires a free ngrok account at <a href="https://ngrok.com" target="_blank">ngrok.com</a>. Copy your authtoken from the dashboard.</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">Python · Google Colab</span>
+        <button class="code-copy" onclick="copyCode(this)">COPY</button>
+      </div>
+      <div class="code-body"><pre><span class="cm"># !pip install pyngrok ollama  ← run in a preceding cell if not installed</span>
 <span class="kw">from</span> pyngrok <span class="kw">import</span> ngrok
 
-NGROK_TOKEN = <span class="st">"your_ngrok_authtoken_here"</span>  <span class="cm"># paste your token</span>
+NGROK_TOKEN = <span class="st">"your_ngrok_authtoken_here"</span>
 ngrok.<span class="fn">set_auth_token</span>(NGROK_TOKEN)
-ngrok.<span class="fn">kill</span>()  <span class="cm"># kill any previous tunnels</span>
+ngrok.<span class="fn">kill</span>()
 
-tunnel  = ngrok.<span class="fn">connect</span>(<span class="num">11434</span>, <span class="st">"http"</span>)
+tunnel   = ngrok.<span class="fn">connect</span>(<span class="num">11434</span>, <span class="st">"http"</span>)
 endpoint = tunnel.public_url
 
-<span class="fn">print</span>(<span class="st">f"Ollama endpoint: {endpoint}"</span>)
-<span class="fn">print</span>(<span class="st">f"OpenClaw config → API: openai-completions | Model: qwen3:8b | Base URL: {endpoint}"</span>)</pre></div>
+<span class="fn">print</span>(<span class="st">f"Endpoint : {endpoint}"</span>)
+<span class="fn">print</span>(<span class="st">f"OpenClaw → API: openai-completions | Base URL: {endpoint} | Model: qwen3:8b"</span>)</pre></div>
     </div>
 
-    <h3>// Cell 4 — Keep-Alive Loop</h3>
-    <div class="callout" style="font-size:12px; margin-bottom:8px;">Prevents Colab from disconnecting due to inactivity. Run this in the final cell and leave it running.</div>
+    <h3>// Cell 5 — Keep-Alive Loop</h3>
+    <div class="callout" style="font-size:12px; margin-bottom:8px;">Leave this running to prevent Colab's idle-disconnect timer from triggering.</div>
     <div class="code-block">
       <div class="code-header">
         <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
         <span class="code-lang">Python · Google Colab</span>
         <button class="code-copy" onclick="copyCode(this)">COPY</button>
       </div>
-      <div class="code-body"><pre><span class="kw">import</span> time
+      <div class="code-body"><pre><span class="kw">import</span> time, requests
 
 <span class="kw">while</span> <span class="kw">True</span>:
-    requests.<span class="fn">post</span>(
-        <span class="st">"http://localhost:11434/api/generate"</span>,
-        json={<span class="st">"model"</span>: <span class="st">"qwen3:8b"</span>, <span class="st">"prompt"</span>: <span class="st">"ping"</span>, <span class="st">"stream"</span>: <span class="kw">False</span>}
-    )
+    <span class="kw">try</span>:
+        requests.<span class="fn">post</span>(
+            <span class="st">"http://localhost:11434/api/generate"</span>,
+            json={<span class="st">"model"</span>: <span class="st">"qwen3:8b"</span>, <span class="st">"prompt"</span>: <span class="st">"ping"</span>, <span class="st">"stream"</span>: <span class="kw">False</span>},
+            timeout=<span class="num">30</span>
+        )
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="st">f"Keep-alive error: {e}"</span>)
     time.<span class="fn">sleep</span>(<span class="num">300</span>)  <span class="cm"># ping every 5 minutes</span></pre></div>
     </div>
   </div>
@@ -719,78 +746,99 @@ endpoint = tunnel.public_url
 <section id="paid-tier">
   <div class="container">
     <div class="section-label">§ 05</div>
-    <h2>Paid Tier Deployment</h2>
-    <p>Pro+ A100-80GB or RTX PRO 6000 (G4) · DeepSeek-R1-Distill-32B (Q4_K_M) · ~20 GB VRAM · 65K context</p>
+    <h2>Pro Tier Deployment</h2>
+    <p>L4 GPU · 22.5 GB VRAM · <strong>Qwen3:14b</strong> (primary) or <strong>deepseek-r1:14b</strong> (math focus) · ~12 GB VRAM · 61.85 t/s · 100% GPU-resident · $9.99/mo</p>
 
-    <p>With the A100-80 GB or RTX PRO 6000, you can comfortably deploy <strong>DeepSeek-R1-Distill-32B at Q4_K_M</strong> with a full 65K context window — the minimum OpenClaw recommends for production agentic use. OpenClaw's system prompt alone consumes approximately 17,000 tokens; with sub-agent context, tool definitions, and conversation history, a 32K context minimum is required, with 65K or more recommended for production with sub-agents.</p>
+    <p>The Pro tier's NVIDIA L4 is a material upgrade from the free T4: nearly <strong>2× the inference throughput</strong>, 50% more VRAM (22.5 GB vs 15 GB), and native FP8 support. Both recommended models fit entirely within VRAM with headroom remaining — meaning <strong>zero CPU offloading</strong> and no performance penalty. Qwen3-14B at Q4_K_M occupies approximately 12 GB, leaving ~10 GB of free VRAM for KV cache at context windows up to ~19K tokens. This is sufficient for OpenClaw agentic chains on most practical tasks, though the ~17K token system prompt will compress usable conversation context.</p>
 
-    <h3>// Cell 1 — Install & Launch (Paid Tier)</h3>
-    <div class="code-block">
-      <div class="code-header">
-        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <span class="code-lang">Python · Google Colab Pro+</span>
-        <button class="code-copy" onclick="copyCode(this)">COPY</button>
-      </div>
-      <div class="code-body"><pre><span class="kw">import</span> subprocess, os, time, requests
-
-os.<span class="fn">system</span>(<span class="st">"sudo apt-get install -y pciutils"</span>)
-os.<span class="fn">system</span>(<span class="st">"curl -fsSL https://ollama.ai/install.sh | sh"</span>)
-
-os.environ[<span class="st">"OLLAMA_KEEP_ALIVE"</span>]      = <span class="st">"24h"</span>
-os.environ[<span class="st">"OLLAMA_NUM_PARALLEL"</span>]    = <span class="st">"2"</span>         <span class="cm"># A100 handles parallel inference</span>
-os.environ[<span class="st">"OLLAMA_CONTEXT_LENGTH"</span>]  = <span class="st">"65536"</span>     <span class="cm"># 65K context for OpenClaw</span>
-
-subprocess.<span class="fn">Popen</span>(
-    [<span class="st">"ollama"</span>, <span class="st">"serve"</span>],
-    stdout=<span class="fn">open</span>(<span class="st">"ollama.log"</span>, <span class="st">"w"</span>),
-    stderr=<span class="fn">open</span>(<span class="st">"ollama_err.log"</span>, <span class="st">"w"</span>),
-    preexec_fn=os.setsid
-)
-
-<span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(<span class="num">30</span>):
-    <span class="kw">try</span>:
-        <span class="kw">if</span> requests.<span class="fn">get</span>(<span class="st">"http://localhost:11434/api/tags"</span>, timeout=<span class="num">2</span>).status_code == <span class="num">200</span>:
-            <span class="fn">print</span>(<span class="st">"Ollama ready."</span>)
-            <span class="kw">break</span>
-    <span class="kw">except</span>:
-        <span class="kw">pass</span>
-    time.<span class="fn">sleep</span>(<span class="num">1</span>)</pre></div>
+    <div class="callout info" style="margin-bottom: 20px;">
+      <strong>L4 vs T4 for LLM inference:</strong> The L4 delivers ~86% more inference throughput than the T4 at essentially the same 72W power draw. For 14B models at Q4_K_M, expect ~60 t/s on the L4 versus ~15–18 t/s on the T4 — a 3–4× speed advantage that materially improves interactive agentic use.
     </div>
 
-    <h3>// Cell 2 — Pull DeepSeek-R1-Distill-32B</h3>
+    <h3>// Cell 1 — Install Ollama</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <span class="code-lang">Python · Google Colab Pro+</span>
+        <span class="code-lang">Shell Magic · Google Colab Pro (L4)</span>
         <button class="code-copy" onclick="copyCode(this)">COPY</button>
       </div>
-      <div class="code-body"><pre><span class="cm"># deepseek-r1:32b — ~20 GB at Q4_K_M, 83% GPQA Diamond, 65K context</span>
-os.<span class="fn">system</span>(<span class="st">"ollama pull deepseek-r1:32b"</span>)
-<span class="fn">print</span>(<span class="st">"Model ready."</span>)</pre></div>
+      <div class="code-body"><pre><span class="cm"># Run as a shell cell — updates the live Colab PATH so subsequent cells see the binary</span>
+!curl -fsSL https://ollama.ai/install.sh | sh</pre></div>
     </div>
 
-    <h3>// Cell 3 — Tunnel & Configure for OpenClaw</h3>
+    <h3>// Cell 2 — Start Ollama Server</h3>
     <div class="code-block">
       <div class="code-header">
         <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
-        <span class="code-lang">Python · Google Colab Pro+</span>
+        <span class="code-lang">Python · Google Colab Pro (L4)</span>
         <button class="code-copy" onclick="copyCode(this)">COPY</button>
       </div>
-      <div class="code-body"><pre><span class="kw">from</span> pyngrok <span class="kw">import</span> ngrok
+      <div class="code-body"><pre><span class="kw">import</span> os, threading, subprocess, time, requests
+
+<span class="kw">def</span> <span class="fn">start_ollama</span>():
+    os.environ[<span class="st">"OLLAMA_HOST"</span>]          = <span class="st">"0.0.0.0:11434"</span>
+    os.environ[<span class="st">"OLLAMA_ORIGINS"</span>]       = <span class="st">"*"</span>
+    os.environ[<span class="st">"OLLAMA_KEEP_ALIVE"</span>]    = <span class="st">"24h"</span>
+    os.environ[<span class="st">"OLLAMA_NUM_PARALLEL"</span>]  = <span class="st">"2"</span>       <span class="cm"># L4 handles light parallelism</span>
+    os.environ[<span class="st">"OLLAMA_CONTEXT_LENGTH"</span>]= <span class="st">"19000"</span>   <span class="cm"># 19K fits within L4 VRAM headroom</span>
+    os.environ[<span class="st">"OLLAMA_FLASH_ATTENTION"</span>]= <span class="st">"1"</span>      <span class="cm"># L4 Ada Lovelace / FP8 support</span>
+    subprocess.<span class="fn">Popen</span>([<span class="st">"ollama"</span>, <span class="st">"serve"</span>])
+
+thread = threading.<span class="fn">Thread</span>(target=start_ollama)
+thread.<span class="fn">start</span>()
+time.<span class="fn">sleep</span>(<span class="num">5</span>)
+
+<span class="kw">try</span>:
+    r = requests.<span class="fn">get</span>(<span class="st">"http://localhost:11434/api/tags"</span>, timeout=<span class="num">5</span>)
+    <span class="fn">print</span>(<span class="st">"✓ Ollama is running on L4."</span> <span class="kw">if</span> r.status_code == <span class="num">200</span> <span class="kw">else</span> <span class="st">f"✗ Status: {r.status_code}"</span>)
+<span class="kw">except</span> requests.exceptions.<span class="fn">ConnectionError</span>:
+    <span class="fn">print</span>(<span class="st">"✗ Server not responding — re-run Cell 1 and try again."</span>)</pre></div>
+    </div>
+
+    <h3>// Cell 3 — Pull Model (choose one)</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">Shell Magic · Google Colab Pro (L4)</span>
+        <button class="code-copy" onclick="copyCode(this)">COPY</button>
+      </div>
+      <div class="code-body"><pre><span class="cm"># OPTION A — General scientific reasoning + OpenClaw agentic use (recommended)</span>
+<span class="cm"># Qwen3-14B: ~12 GB VRAM, 61.85 t/s, 100% GPU-resident, best instruction-following in class</span>
+!ollama pull qwen3:14b
+
+<span class="cm"># OPTION B — Math-heavy science (physics derivations, competition math, proofs)</span>
+<span class="cm"># DeepSeek-R1-14B: 94.9% Math-500, 66.7% AIME — same ~12 GB VRAM</span>
+<span class="cm"># Trade-off: lower IFBench (0.221), requires more explicit prompting for tool-calling</span>
+<span class="cm"># !ollama pull deepseek-r1:14b</span></pre></div>
+    </div>
+
+    <h3>// Cell 4 — Tunnel &amp; Configure for OpenClaw</h3>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots"><span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span></div>
+        <span class="code-lang">Python · Google Colab Pro (L4)</span>
+        <button class="code-copy" onclick="copyCode(this)">COPY</button>
+      </div>
+      <div class="code-body"><pre><span class="cm"># !pip install pyngrok ollama  ← run in a preceding cell if not installed</span>
+<span class="kw">from</span> pyngrok <span class="kw">import</span> ngrok
 
 NGROK_TOKEN = <span class="st">"your_ngrok_authtoken_here"</span>
 ngrok.<span class="fn">set_auth_token</span>(NGROK_TOKEN)
 ngrok.<span class="fn">kill</span>()
+
 tunnel   = ngrok.<span class="fn">connect</span>(<span class="num">11434</span>, <span class="st">"http"</span>)
 endpoint = tunnel.public_url
 
+MODEL = <span class="st">"qwen3:14b"</span>  <span class="cm"># or "deepseek-r1:14b" for math focus</span>
+
 <span class="fn">print</span>(<span class="st">"=" * 60</span>)
-<span class="fn">print</span>(<span class="st">"OPENCLAW CONFIGURATION"</span>)
+<span class="fn">print</span>(<span class="st">"OPENCLAW CONFIGURATION — Pro Tier (L4)"</span>)
 <span class="fn">print</span>(<span class="st">"=" * 60</span>)
 <span class="fn">print</span>(<span class="st">f"API Type       : openai-completions"</span>)
 <span class="fn">print</span>(<span class="st">f"Base URL       : {endpoint}"</span>)
-<span class="fn">print</span>(<span class="st">f"Model ID       : deepseek-r1:32b"</span>)
-<span class="fn">print</span>(<span class="st">f"Context Window : 65536"</span>)
+<span class="fn">print</span>(<span class="st">f"Model ID       : {MODEL}"</span>)
+<span class="fn">print</span>(<span class="st">f"Context Window : 19000"</span>)
+<span class="fn">print</span>(<span class="st">f"Thinking Mode  : medium"</span>)
 <span class="fn">print</span>(<span class="st">"=" * 60</span>)</pre></div>
     </div>
   </div>
@@ -807,8 +855,8 @@ endpoint = tunnel.public_url
     <div style="margin: 28px 0;">
       <div class="config-row" style="border-top: 1px solid var(--border);">
         <span class="config-key">Field</span>
-        <span class="config-free" style="color: var(--cyan); font-family: 'IBM Plex Mono', monospace; font-size: 11px;">Free Tier (T4)</span>
-        <span class="config-paid" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px;">Paid Tier (A100/G4)</span>
+        <span class="config-free" style="color: var(--cyan); font-family: 'IBM Plex Mono', monospace; font-size: 11px;">Free Tier (T4 · 15 GB)</span>
+        <span class="config-paid" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px;">Pro Tier (L4 · 22.5 GB)</span>
       </div>
       <div class="config-row">
         <span class="config-key">API Type</span>
@@ -821,26 +869,36 @@ endpoint = tunnel.public_url
         <span class="config-paid"><code>https://xxxx.ngrok-free.app</code></span>
       </div>
       <div class="config-row">
-        <span class="config-key">Model ID</span>
+        <span class="config-key">Model ID (default)</span>
         <span class="config-free"><code>qwen3:8b</code></span>
-        <span class="config-paid"><code>deepseek-r1:32b</code></span>
+        <span class="config-paid"><code>qwen3:14b</code></span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Model ID (math)</span>
+        <span class="config-free"><code>deepseek-r1:8b</code></span>
+        <span class="config-paid"><code>deepseek-r1:14b</code></span>
       </div>
       <div class="config-row">
         <span class="config-key">Context Window</span>
         <span class="config-free"><code>8192</code></span>
-        <span class="config-paid"><code>65536</code></span>
+        <span class="config-paid"><code>19000</code></span>
       </div>
       <div class="config-row">
         <span class="config-key">Thinking Mode</span>
         <span class="config-free"><code>medium</code></span>
-        <span class="config-paid"><code>high</code></span>
+        <span class="config-paid"><code>medium</code> (or <code>high</code>)</span>
+      </div>
+      <div class="config-row">
+        <span class="config-key">Flash Attention</span>
+        <span class="config-free"><code>off</code> (T4 / Turing arch)</span>
+        <span class="config-paid"><code>OLLAMA_FLASH_ATTENTION=1</code></span>
       </div>
     </div>
 
-    <p>After saving Config, navigate to <strong>Agents</strong> and set the Primary Model to <code>ollama/qwen3:8b</code> or <code>ollama/deepseek-r1:32b</code> as appropriate.</p>
+    <p>After saving Config, navigate to <strong>Agents</strong> and set the Primary Model to <code>ollama/qwen3:8b</code> (free) or <code>ollama/qwen3:14b</code> (Pro) as appropriate. For math-focus deployments substitute <code>ollama/deepseek-r1:8b</code> or <code>ollama/deepseek-r1:14b</code> respectively.</p>
 
     <div class="callout">
-      <strong>Context Note:</strong> OpenClaw's system prompt alone consumes ~17,000 tokens. With sub-agent context, tool definitions, and conversation history, a 32K context minimum is required for stable agentic operation. The free-tier 8K context will truncate long agentic chains — this is the primary functional limitation of the free deployment.
+      <strong>Context note for the Pro tier:</strong> At 19K context on the L4, OpenClaw's ~17K system prompt occupies nearly all of the window on the first turn. For multi-turn agentic chains, reduce the system prompt verbosity in <code>openclaw.json</code> or increase context to the maximum your VRAM headroom allows (up to ~24K on the L4 at this model size). The free tier at 8K context will reliably truncate long agentic chains — treat it as a querying and prototyping environment rather than a production agent host.
     </div>
   </div>
 </section>
@@ -887,52 +945,62 @@ endpoint = tunnel.public_url
         <thead>
           <tr>
             <th>Criterion</th>
-            <th>Free Tier (T4)</th>
-            <th>Paid Tier (Pro+ A100/G4)</th>
+            <th>Free Tier (T4 · 15 GB)</th>
+            <th>Pro Tier (L4 · 22.5 GB · $9.99/mo)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Best Model</td>
-            <td>Qwen3-8B (Q4_K_M)</td>
-            <td>DeepSeek-R1-Distill-32B (Q4_K_M)</td>
+            <td>Primary Model</td>
+            <td>qwen3:8b (Q4_K_M)</td>
+            <td>qwen3:14b (Q4_K_M)</td>
+          </tr>
+          <tr>
+            <td>Math-Focus Model</td>
+            <td>deepseek-r1:8b</td>
+            <td>deepseek-r1:14b (94.9% Math-500)</td>
           </tr>
           <tr>
             <td>VRAM Used</td>
-            <td>~5 GB of 15 GB</td>
-            <td>~20 GB of 40–96 GB</td>
+            <td>~5–6 GB of 15 GB</td>
+            <td>~12 GB of 22.5 GB (100% GPU)</td>
+          </tr>
+          <tr>
+            <td>Generation Speed</td>
+            <td>~28 t/s (8B on T4)</td>
+            <td>~62 t/s (14B on L4, full GPU)</td>
           </tr>
           <tr>
             <td>Context Window</td>
             <td>8K tokens</td>
-            <td>65K tokens (full OpenClaw support)</td>
+            <td>19K tokens (VRAM-safe)</td>
           </tr>
           <tr>
-            <td>GPQA Diamond</td>
-            <td>~73% (8B class)</td>
-            <td>~83% (32B class)</td>
+            <td>Flash Attention</td>
+            <td>Not supported (Turing arch)</td>
+            <td>Supported (Ada Lovelace / FP8)</td>
+          </tr>
+          <tr>
+            <td>MMLU-Pro (14B class)</td>
+            <td>~0.65 (8B class)</td>
+            <td>0.774 (Qwen3-14B)</td>
           </tr>
           <tr>
             <td>OpenClaw Suitability</td>
-            <td>Limited (tool-call hallucinations at 8B)</td>
-            <td>Production-grade</td>
+            <td>Prototyping / direct queries</td>
+            <td>Light agentic use (19K context ceiling)</td>
           </tr>
           <tr>
             <td>Tunnel</td>
             <td>ngrok free tier</td>
-            <td>ngrok paid (IP allowlist)</td>
-          </tr>
-          <tr>
-            <td>Monthly Cost</td>
-            <td>Free</td>
-            <td>$49.99/mo (Pro+)</td>
+            <td>ngrok free or paid (IP allowlist)</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="callout" style="margin-top: 32px;">
-      <strong>Bottom Line:</strong> The paid tier with DeepSeek-R1-32B represents the optimal balance between scientific benchmark performance, agentic reliability, and Colab cost within a plausible academic budget. The free tier remains a capable prototyping environment for direct scientific querying but should not be used for production agentic workflows that depend on reliable multi-step tool calling.
+      <strong>Bottom Line:</strong> The Pro tier's L4 GPU at $9.99/mo delivers a 3–4× speed improvement and enables 14B models that run entirely in VRAM — making it the clear academic daily-driver at a modest subscription cost. Qwen3-14B is the default for general scientific reasoning and reliable tool-calling; DeepSeek-R1-Distill-14B is the specialist choice when mathematical correctness is the primary concern. The free T4 remains an excellent prototyping environment for direct scientific queries but is not suitable for production OpenClaw agentic pipelines.
     </div>
   </div>
 </section>
